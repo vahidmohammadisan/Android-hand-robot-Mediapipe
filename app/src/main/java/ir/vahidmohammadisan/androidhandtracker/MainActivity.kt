@@ -13,9 +13,16 @@ import com.google.mediapipe.solutions.hands.Hands
 import com.google.mediapipe.solutions.hands.HandsOptions
 import com.google.mediapipe.solutions.hands.HandsResult
 
+
 class MainActivity : AppCompatActivity() {
 
     private var hands: Hands? = null
+
+    var THUMB_FINGER: Boolean = true
+    var INDEX_FINGER: Boolean = true
+    var MIDDLE_FINGER: Boolean = true
+    var RING_FINGER: Boolean = true
+    var PINKY_FINGER: Boolean = true
 
     // Live camera demo UI and camera components.
     private var cameraInput: CameraInput? = null
@@ -101,43 +108,69 @@ class MainActivity : AppCompatActivity() {
         cameraInput!!.start(
             this,
             hands!!.glContext,
-            CameraInput.CameraFacing.FRONT,
+            CameraInput.CameraFacing.BACK,
             glSurfaceView!!.width,
             glSurfaceView!!.height
         )
     }
 
     private fun logWristLandmark(result: HandsResult, showPixelValues: Boolean) {
-        val wristLandmark = Hands.getHandLandmark(result, 0, HandLandmark.WRIST)
-        val THUMB_TIP = Hands.getHandLandmark(result, 0, HandLandmark.THUMB_TIP)
-        val THUMB_IP = Hands.getHandLandmark(result, 0, HandLandmark.THUMB_IP)
-        val INDEX_FINGER_TIP = Hands.getHandLandmark(result, 0, HandLandmark.INDEX_FINGER_TIP)
-        val INDEX_FINGER_PIP = Hands.getHandLandmark(result, 0, HandLandmark.INDEX_FINGER_PIP)
-        val MIDDLE_FINGER_TIP = Hands.getHandLandmark(result, 0, HandLandmark.MIDDLE_FINGER_TIP)
-        val MIDDLE_FINGER_PIP = Hands.getHandLandmark(result, 0, HandLandmark.MIDDLE_FINGER_PIP)
-        val RING_FINGER_TIP = Hands.getHandLandmark(result, 0, HandLandmark.RING_FINGER_TIP)
-        val RING_FINGER_PIP = Hands.getHandLandmark(result, 0, HandLandmark.RING_FINGER_PIP)
-        val PINKY_TIP = Hands.getHandLandmark(result, 0, HandLandmark.PINKY_TIP)
-        val PINKY_PIP = Hands.getHandLandmark(result, 0, HandLandmark.PINKY_PIP)
+
+        if (result.multiHandLandmarks().isEmpty()) {
+            return
+        }
+
+        val THUMB_TIP = result.multiHandLandmarks()[0].landmarkList[HandLandmark.THUMB_TIP]
+        val THUMB_IP = result.multiHandLandmarks()[0].landmarkList[HandLandmark.THUMB_IP]
+        val INDEX_FINGER_TIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.INDEX_FINGER_TIP]
+        val INDEX_FINGER_PIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.INDEX_FINGER_PIP]
+
+        val MIDDLE_FINGER_TIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.MIDDLE_FINGER_TIP]
+        val MIDDLE_FINGER_PIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.MIDDLE_FINGER_PIP]
+        val RING_FINGER_TIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.RING_FINGER_TIP]
+        val RING_FINGER_PIP =
+            result.multiHandLandmarks()[0].landmarkList[HandLandmark.RING_FINGER_PIP]
+        val PINKY_TIP = result.multiHandLandmarks()[0].landmarkList[HandLandmark.PINKY_TIP]
+        val PINKY_PIP = result.multiHandLandmarks()[0].landmarkList[HandLandmark.PINKY_PIP]
 
         if (showPixelValues) {
             val width = result.inputBitmap().width
             val height = result.inputBitmap().height
-            Log.i(
-                TAG, String.format(
-                    "MediaPipe Hand wrist coordinates (pixel values): x=%f, y=%f",
-                    wristLandmark.x * width, wristLandmark.y * height
-                )
-            )
         } else {
-            Log.i(
-                TAG, String.format(
-                    "MediaPipe Hand wrist normalized coordinates (value range: [0, 1]): x=%f, y=%f",
-                    wristLandmark.x, wristLandmark.y
-                )
-            )
+
+            if (THUMB_IP.y > THUMB_TIP.y) {
+                runOnUiThread { Log.w("THUMB is: ", "open") }
+            } else {
+                runOnUiThread { Log.w("THUMB is: ", "close") }
+            }
+
             if (INDEX_FINGER_PIP.y > INDEX_FINGER_TIP.y) {
-                runOnUiThread { Log.w("helloooooow", "---------->") }
+                runOnUiThread { Log.w("INDEX_FINGER is: ", "open") }
+            } else {
+                runOnUiThread { Log.w("INDEX_FINGER is: ", "close") }
+            }
+
+            if (MIDDLE_FINGER_PIP.y > MIDDLE_FINGER_TIP.y) {
+                runOnUiThread { Log.w("MIDDLE_FINGER is: ", "open") }
+            } else {
+                runOnUiThread { Log.w("MIDDLE_FINGER is: ", "close") }
+            }
+
+            if (RING_FINGER_PIP.y > RING_FINGER_TIP.y) {
+                runOnUiThread { Log.w("RING_FINGER is: ", "open") }
+            } else {
+                runOnUiThread { Log.w("RING_FINGER is: ", "close") }
+            }
+
+            if (PINKY_PIP.y > PINKY_TIP.y) {
+                runOnUiThread { Log.w("PINKY is: ", "open") }
+            } else {
+                runOnUiThread { Log.w("PINKY is: ", "close") }
             }
         }
     }
