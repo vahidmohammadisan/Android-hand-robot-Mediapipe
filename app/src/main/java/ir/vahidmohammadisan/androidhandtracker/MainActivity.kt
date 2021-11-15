@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.ahmedabdelmeged.bluetoothmc.BluetoothMC
 import com.google.mediapipe.framework.TextureFrame
 import com.google.mediapipe.solutioncore.CameraInput
 import com.google.mediapipe.solutioncore.SolutionGlSurfaceView
@@ -12,17 +13,19 @@ import com.google.mediapipe.solutions.hands.HandLandmark
 import com.google.mediapipe.solutions.hands.Hands
 import com.google.mediapipe.solutions.hands.HandsOptions
 import com.google.mediapipe.solutions.hands.HandsResult
+import com.ahmedabdelmeged.bluetoothmc.util.BluetoothStates
 
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import com.ahmedabdelmeged.bluetoothmc.ui.BluetoothDevices
+
+import android.content.Intent
+import android.app.Activity
 
 class MainActivity : AppCompatActivity() {
 
     private var hands: Hands? = null
-
-    var THUMB_FINGER: Boolean = true
-    var INDEX_FINGER: Boolean = true
-    var MIDDLE_FINGER: Boolean = true
-    var RING_FINGER: Boolean = true
-    var PINKY_FINGER: Boolean = true
+    lateinit var bluetoothmc:BluetoothMC
 
     // Live camera demo UI and camera components.
     private var cameraInput: CameraInput? = null
@@ -32,7 +35,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        bluetoothmc = BluetoothMC()
+
+        val intent = Intent(this@MainActivity, BluetoothDevices::class.java)
+        startActivityForResult(intent, BluetoothStates.REQUEST_CONNECT_DEVICE)
+
         setupStreamingModePipeline()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BluetoothStates.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == RESULT_OK) {
+                bluetoothmc.connect(data)
+            }
+        }
     }
 
     override fun onResume() {
@@ -145,32 +162,42 @@ class MainActivity : AppCompatActivity() {
 
             if (THUMB_IP.y > THUMB_TIP.y) {
                 runOnUiThread { Log.w("THUMB is: ", "open") }
+                bluetoothmc.send("A");
             } else {
                 runOnUiThread { Log.w("THUMB is: ", "close") }
+                bluetoothmc.send("a");
             }
 
             if (INDEX_FINGER_PIP.y > INDEX_FINGER_TIP.y) {
                 runOnUiThread { Log.w("INDEX_FINGER is: ", "open") }
+                bluetoothmc.send("V");
             } else {
                 runOnUiThread { Log.w("INDEX_FINGER is: ", "close") }
+                bluetoothmc.send("v");
             }
 
             if (MIDDLE_FINGER_PIP.y > MIDDLE_FINGER_TIP.y) {
                 runOnUiThread { Log.w("MIDDLE_FINGER is: ", "open") }
+                bluetoothmc.send("C");
             } else {
                 runOnUiThread { Log.w("MIDDLE_FINGER is: ", "close") }
+                bluetoothmc.send("c");
             }
 
             if (RING_FINGER_PIP.y > RING_FINGER_TIP.y) {
                 runOnUiThread { Log.w("RING_FINGER is: ", "open") }
+                bluetoothmc.send("D");
             } else {
                 runOnUiThread { Log.w("RING_FINGER is: ", "close") }
+                bluetoothmc.send("d");
             }
 
             if (PINKY_PIP.y > PINKY_TIP.y) {
                 runOnUiThread { Log.w("PINKY is: ", "open") }
+                bluetoothmc.send("F");
             } else {
                 runOnUiThread { Log.w("PINKY is: ", "close") }
+                bluetoothmc.send("f");
             }
         }
     }
