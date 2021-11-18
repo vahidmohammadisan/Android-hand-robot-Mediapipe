@@ -1,5 +1,5 @@
 # AndroidHandTracker
-android hand tracker
+android hand tracker with google mediapipe api 
 
 
-![](android_hand_tracker.gif)
+![](android_hand_track.gif)
