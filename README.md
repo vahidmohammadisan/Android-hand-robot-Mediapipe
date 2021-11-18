@@ -1,4 +1,4 @@
-# AndroidHandTracker
+# Android Hand Tracker
 android hand tracker with google mediapipe 
 
 
