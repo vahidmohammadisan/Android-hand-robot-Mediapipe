@@ -162,10 +162,10 @@ class MainActivity : AppCompatActivity() {
 
             if (THUMB_IP.y > THUMB_TIP.y) {
                 runOnUiThread { Log.w("THUMB is: ", "open") }
-                bluetoothmc.send("A");
+                //bluetoothmc.send("A");
             } else {
                 runOnUiThread { Log.w("THUMB is: ", "close") }
-                bluetoothmc.send("a");
+                //bluetoothmc.send("a");
             }
 
             if (INDEX_FINGER_PIP.y > INDEX_FINGER_TIP.y) {
